@@ -57,10 +57,32 @@ def register_user():
     if is_user_in_db:
         flash("Account already exists. Please log in.")
     else:
-        flash("Account created! Please log in.")
         user = crud.create_user(email, password)
         db.session.add(user)
         db.session.commit()
+        flash("Account created! Please log in.")
+
+    return redirect('/')
+
+@app.route("/login", methods=["POST"])
+def login_user():
+    """Log in user."""
+    email = request.form.get("email")
+    password = request.form.get("password")
+
+    is_user_in_db = crud.get_user_by_email(email)
+
+    if is_user_in_db:
+        db_user = crud.get_user_by_email(email)
+        db_password = db_user.password
+
+        if password == db_password:
+            session["user_id"] = db_user.user_id
+            flash("Logged in!")
+        else: 
+            flash("Wrong Password. Please try again.")
+    else:
+        flash("Account does not exist. Please register.")
 
     return redirect('/')
 
