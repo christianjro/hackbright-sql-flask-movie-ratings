@@ -18,6 +18,10 @@ def get_user_by_id(user_id):
     """Return a user by primary key."""
     return User.query.get(user_id)
 
+def get_user_by_email(email):
+    """Return a user by email."""
+    return User.query.filter(User.email == email).first()
+
 
 # Movie Functions
 def create_movie(title, overview, release_date, poster_path):

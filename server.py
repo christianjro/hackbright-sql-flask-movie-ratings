@@ -46,6 +46,23 @@ def show_user(user_id):
     user_ratings = crud.get_ratings_by_user(user)
     return render_template("user_details.html", user=user, user_ratings=user_ratings)
 
+@app.route("/users", methods=["POST"])
+def register_user():
+    """Create a new user."""
+    email = request.form.get("email")
+    password = request.form.get("password")
+
+    is_user_in_db = crud.get_user_by_email(email)
+
+    if is_user_in_db:
+        flash("Account already exists. Please log in.")
+    else:
+        flash("Account created! Please log in.")
+        user = crud.create_user(email, password)
+        db.session.add(user)
+        db.session.commit()
+
+    return redirect('/')
 
 
 if __name__ == "__main__":
